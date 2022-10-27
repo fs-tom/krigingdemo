@@ -93,7 +93,9 @@
     (fn  ^double [^double x ^double y]
       (.interpolate krig x y))))
 
+;;error when all scores were the same?
 (deflerper ->kriger KrigingInterpolation2D)
+;;error when called
 (deflerper ->cubic  CubicSplineInterpolation2D)
 (deflerper ->shepard ShepardInterpolation2D)
 
@@ -112,11 +114,13 @@
         (>= x 0.60) 1
         :else 0))
 
-(defn new-points [f & {:keys [knowns] :or {knowns (fn [_] nil)}}]
+(defn new-points [f & {:keys [knowns assessor] :or {knowns (fn [_]
+                                                             nil)
+                                                    assessor assess}}]
   (vec (for [[ac rc total] (lerped f :knowns knowns)]
          (let [total (max (min total 1.0)
                           0)]
-           {:AC-Supply ac :RC-Supply rc :Total total :color (assess total)}))))
+           {:AC-Supply ac :RC-Supply rc :Total total :color (assessor total)}))))
 
 (defn variables->arrays
   [table]
@@ -125,11 +129,12 @@
    (-> (tbl/get-field :Total table ) :Total double-array)])
 
 (defn interpolate-data
-  [lerper table]
+  [lerper table & {:keys [assessor] :or {assessor assess}}]
   (let [[xs ys zs] (variables->arrays table)
         points (map (fn [x y z] [(mapv long [x y]) z]) xs ys zs)]
     (new-points (lerper xs ys zs)
-                :knowns (into {[0 0] 0} points))))
+                :knowns (into {[0 0] 0} points)
+                :assessor assessor)))
 
 ;;demo
 (def data (tbl/tabdelimited->table sparse))
