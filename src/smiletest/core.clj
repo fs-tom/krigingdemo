@@ -102,8 +102,10 @@
 ;;error
 ;;(deflerper ->rbf     RBFInterpolation2D)
 
-(defn lerped [f & {:keys [knowns] :or {knowns (fn [_] nil)}}]
-  (vec (for [x (range 0 17)
+;;bleh! just compute bounds here maybe but then would need to pipe through...
+(defn lerped [f & {:keys [knowns bounds] :or {knowns (fn [_] nil)}}]
+  (vec (for [
+             x (range 0 17)
              y (range 0 16)]
          [x y (or (knowns [x y])
                   (f x y))])))
@@ -114,10 +116,10 @@
         (>= x 0.60) 1
         :else 0))
 
-(defn new-points [f & {:keys [knowns assessor] :or {knowns (fn [_]
+(defn new-points [f & {:keys [knowns assessor bounds] :or {knowns (fn [_]
                                                              nil)
                                                     assessor assess}}]
-  (vec (for [[ac rc total] (lerped f :knowns knowns)]
+  (vec (for [[ac rc total] (lerped f :knowns knowns :bounds bounds)]
          (let [total (max (min total 1.0)
                           0)]
            {:AC-Supply ac :RC-Supply rc :Total total :color (assessor total)}))))
@@ -129,12 +131,18 @@
    (-> (tbl/get-field :Total table ) :Total double-array)])
 
 (defn interpolate-data
-  [lerper table & {:keys [assessor] :or {assessor assess}}]
+  [lerper table & {:keys [assessor bounds] :or {assessor assess}}]
   (let [[xs ys zs] (variables->arrays table)
+        {:keys [ymax ymin xmax xmin] :or
+         ;;Set the bounds of interpolation to be the max and mins
+         {ymax (reduce max ys) ymin (reduce min ys)
+          xmax (reduce max xs) xmin (reduce min xs) :as bs}} bounds
         points (map (fn [x y z] [(mapv long [x y]) z]) xs ys zs)]
     (new-points (lerper xs ys zs)
                 :knowns (into {[0 0] 0} points)
-                :assessor assessor)))
+                :assessor assessor
+                :bounds bs
+                )))
 
 ;;demo
 (def data (tbl/tabdelimited->table sparse))
