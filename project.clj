@@ -8,4 +8,7 @@
                  [org.clojars.haifengl/smile "2.5.3"]
                  [com.github.haifengl/smile-interpolation "2.5.3"]
                  [com.github.haifengl/smile-plot "2.5.3"]
-                 [com.github.haifengl/smile-mkl "2.5.3"]])
+                 [org.bytedeco/openblas-platform "0.3.21-1.5.8"]
+                 #_
+                 [com.github.haifengl/smile-mkl "2.5.3"]]
+  :jvm-opts ["-Djavacpp.platform=windows-x86_64"])
