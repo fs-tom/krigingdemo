@@ -136,7 +136,7 @@
         {:keys [ymax ymin xmax xmin] :or
          ;;Set the bounds of interpolation to be the max and mins
          {ymax (reduce max ys) ymin (reduce min ys)
-          xmax (reduce max xs) xmin (reduce min xs) :as bs}} bounds
+          xmax (reduce max xs) xmin (reduce min xs)} :as bs} bounds
         points (map (fn [x y z] [(mapv long [x y]) z]) xs ys zs)]
     (new-points (lerper xs ys zs)
                 :knowns (into {[0 0] 0} points)
