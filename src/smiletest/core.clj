@@ -7,6 +7,7 @@
             ShepardInterpolation2D
             CubicSplineInterpolation2D
             Interpolation2D]
+           #_
            [smile.plot.swing Canvas Point ScatterPlot]))
 
 (def sparse

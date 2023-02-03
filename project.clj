@@ -7,8 +7,15 @@
                  [spork "0.2.1.3-SNAPSHOT"]
                  [org.clojars.haifengl/smile "2.5.3"]
                  [com.github.haifengl/smile-interpolation "2.5.3"]
+                 #_
                  [com.github.haifengl/smile-plot "2.5.3"]
+                 #_
                  [org.bytedeco/openblas-platform "0.3.21-1.5.8"]
+                 [org.bytedeco/openblas "0.3.21-1.5.8"]
+                 [org.bytedeco/openblas "0.3.21-1.5.8" :classifier "windows-x86_64"]
+                 [org.bytedeco/openblas "0.3.21-1.5.8" :classifier "linux-x86_64"]
+                 ;;specialized deps.
+                 ;;
                  #_
                  [com.github.haifengl/smile-mkl "2.5.3"]]
-  :jvm-opts ["-Djavacpp.platform=windows-x86_64"])
+  :jvm-opts ["-Djavacpp.platform=windows-x86_64" "-Dopenblas.platform=windows-x86_64"])
